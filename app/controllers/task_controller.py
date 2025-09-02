@@ -1,47 +1,138 @@
-from flask import render_template, request, redirect, url_for
-from app.models.task import Task
-from app.models.user import User
-from app.db import db_session
+from flask import request, jsonify
 
-class TaskController:
+# Banco de dados em memória
+tasks = []
+task_counter = 1
 
-    @staticmethod
-    def list_tasks():
-        tasks = db_session.query(Task).all()
-        return render_template("tasks.html", tasks=tasks)
 
-    @staticmethod
-    def create_task():
-        if request.method == 'POST':
-            title = request.form['title']
-            description = request.form.get('description')
-            user_id = request.form['user_id']
+def get_tasks():
+    """
+    Lista todas as tarefas
+    ---
+    tags:
+      - Tasks
+    responses:
+      200:
+        description: Lista de tarefas retornada com sucesso
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              title:
+                type: string
+              user_id:
+                type: integer
+              status:
+                type: string
+    """
+    return jsonify(tasks), 200
 
-            new_task = Task(
-                title=title,
-                description=description,
-                status='Pendente',
-                user_id=user_id
-            )
-            db_session.add(new_task)
-            db_session.commit()
-            return redirect(url_for('list_tasks'))
 
-        users = db_session.query(User).all()
-        return render_template("create_task.html", users=users)
+def create_task():
+    """
+    Cria uma nova tarefa
+    ---
+    tags:
+      - Tasks
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - title
+            - user_id
+          properties:
+            title:
+              type: string
+            user_id:
+              type: integer
+    responses:
+      201:
+        description: Tarefa criada com sucesso
+    """
+    global task_counter
 
-    @staticmethod
-    def update_task_status(task_id):
-        task = db_session.query(Task).filter_by(id=task_id).first()
-        if task:
-            task.status = 'Concluída' if task.status == 'Pendente' else 'Pendente'
-            db_session.commit()
-        return redirect(url_for('list_tasks'))
+    data = request.get_json()
+    title = data.get("title")
+    user_id = data.get("user_id")
 
-    @staticmethod
-    def delete_task(task_id):
-        task = db_session.query(Task).filter_by(id=task_id).first()
-        if task:
-            db_session.delete(task)
-            db_session.commit()
-        return redirect(url_for('list_tasks'))
+    if not title or not user_id:
+        return jsonify({"error": "Campos 'title' e 'user_id' são obrigatórios"}), 400
+
+    task = {
+        "id": task_counter,
+        "title": title,
+        "user_id": user_id,
+        "status": "pendente"
+    }
+    tasks.append(task)
+    task_counter += 1
+
+    return jsonify(task), 201
+
+
+def update_task(task_id):
+    """
+    Atualiza uma tarefa existente
+    ---
+    tags:
+      - Tasks
+    parameters:
+      - name: task_id
+        in: path
+        type: integer
+        required: true
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+            status:
+              type: string
+    responses:
+      200:
+        description: Tarefa atualizada com sucesso
+      404:
+        description: Tarefa não encontrada
+    """
+    data = request.get_json()
+    for task in tasks:
+        if task["id"] == task_id:
+            task["title"] = data.get("title", task["title"])
+            task["status"] = data.get("status", task["status"])
+            return jsonify(task), 200
+
+    return jsonify({"error": "Tarefa não encontrada"}), 404
+
+
+def delete_task(task_id):
+    """
+    Exclui uma tarefa existente
+    ---
+    tags:
+      - Tasks
+    parameters:
+      - name: task_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Tarefa excluída com sucesso
+      404:
+        description: Tarefa não encontrada
+    """
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            return jsonify({"message": "Tarefa excluída com sucesso"}), 200
+
+    return jsonify({"error": "Tarefa não encontrada"}), 404
