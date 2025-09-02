@@ -1,9 +1,11 @@
 from flask import Flask, request
+from flasgger import Swagger
 from app.controllers.task_controller import TaskController
 from app.db import init_db
 
 app = Flask(__name__)
-init_db()
+swagger = Swagger(app)
+
 
 app.add_url_rule('/tasks', 'list_tasks', TaskController.list_tasks)
 app.add_url_rule('/tasks/new', 'create_task', TaskController.create_task, methods=['GET', 'POST'])
