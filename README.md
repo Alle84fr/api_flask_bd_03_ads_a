@@ -1,5 +1,64 @@
-# api_flask_bd_03_ads_a
+# Ateliê Online - Cadastro de Serviços
 
+Este projeto é uma aplicação em **Flask** estruturada no padrão **MVC**
+que permite o cadastro e a listagem de serviços de um ateliê.\
+Inclui integração com banco de dados **MySQL** e documentação interativa
+com **Swagger (Flasgger)**.
+
+------------------------------------------------------------------------
+
+## 🚀 Tecnologias Utilizadas
+
+-   Python 3
+-   Flask
+-   Flask-SQLAlchemy
+-   Flasgger (Swagger UI)
+-   MySQL (ou SQLite para testes)
+-   HTML, CSS, JavaScript
+
+------------------------------------------------------------------------
+
+## 📂 Estrutura do Projeto
+
+    atelie_online/
+    │── app.py                # Arquivo principal
+    │── config.py             # Configuração da aplicação
+    │
+    ├── controllers/          # Controladores (rotas e lógica da API)
+    │   └── servico_controller.py
+    │
+    ├── models/               # Modelos do banco de dados
+    │   └── servico_model.py
+    │
+    ├── static/               # Arquivos estáticos (CSS, JS)
+    │   ├── css/
+    │   │   └── style.css
+    │   └── js/
+    │       └── script.js
+    │
+    ├── templates/            # Templates HTML (caso queira visualizar no browser)
+    │   ├── base.html
+    │   ├── cadastro_servico.html
+    │   └── lista_servicos.html
+
+------------------------------------------------------------------------
+
+## 📌 Endpoints da API (Swagger)
+
+A documentação interativa pode ser acessada em:
+
+    http://127.0.0.1:5000/apidocs/
+
+### Principais Rotas
+
+-   `GET /servicos` → Lista todos os serviços
+-   `POST /servicos` → Cria um novo serviço
+-   `PUT /servicos/<id>` → Atualiza um serviço
+-   `DELETE /servicos/<id>` → Remove um serviço
+
+------------------------------------------------------------------------
+
+## Feito por:
 
 1. Alessandra Furlanetto Rigonatti - 2401151
 2. Enzo Pelakoski Cavinato - 2400911
