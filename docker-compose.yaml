@@ -12,7 +12,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3308:3306"
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u grupo_03 -p12345"]
       interval: 10s
@@ -33,6 +33,22 @@ services:
       DB_NAME: Full_stack
       DB_USER: grupo_03
       DB_PASSWORD: 12345
+
+  web:
+    container_name: web_f
+    build: .
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: mysql+pymysql://atelie_user:atelie_pass@db:3306/atelie
+      FLASK_ENV: development
+
 
 volumes:
   mysql_data: 

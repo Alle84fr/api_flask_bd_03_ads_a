@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ user and "Editar Usuário" or "Novo Usuário" }}</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Nome</label>
+        <input type="text" name="name" class="form-control" value="{{ user.name if user else '' }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" value="{{ user.email if user else '' }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
+{% endblock %}
