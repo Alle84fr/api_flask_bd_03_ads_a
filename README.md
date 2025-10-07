@@ -65,3 +65,30 @@ A documentação interativa pode ser acessada em:
 3. Guilherme de Freitas Fracasso - 2400916
 4. Matheus Barros Ferreira - 2401102
 5. Rafaela Wohlers Rodrigues - 2404142
+
+## Diagrama ER:
+
++-------------+        +----------------+        +-----------------+
+|  cliente    |1------<|  agendamento   |>------1|   servico       |
++-------------+        +----------------+        +-----------------+
+| id_cliente  |        | id_agendamento |        | id_servico      |
+| nome        |        | id_cliente     |        | nome            |
+| email       |        | id_servico     |        | preco           |
++-------------+        +----------------+        +-----------------+
+                               |
+                               v
+                        +------------------+
+                        |   funcionario    |
+                        +------------------+
+                        | id_funcionario   |
+                        | nome             |
+                        | cargo            |
+                        +------------------+
+                               ^
+                               |
+                         +--------------+
+                         | servico_func.|
+                         +--------------+
+                         | id_servico   |
+                         | id_funcion.  |
+                         +--------------+
