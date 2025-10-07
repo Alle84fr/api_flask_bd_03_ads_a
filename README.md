@@ -66,8 +66,76 @@ A documentação interativa pode ser acessada em:
 4. Matheus Barros Ferreira - 2401102
 5. Rafaela Wohlers Rodrigues - 2404142
 
-## Diagrama ER:
+# 🧵 Modelo Relacional de Dados – Ateliê Online
 
+## 🧩 Tabelas Principais
+
+### 1. cliente
+| Campo | Tipo | Restrições |
+|-------|------|-------------|
+| id_cliente | SERIAL | PRIMARY KEY |
+| nome | VARCHAR(100) | NOT NULL |
+| email | VARCHAR(100) | UNIQUE NOT NULL |
+| senha_hash | VARCHAR(255) | NOT NULL |
+| telefone | VARCHAR(20) | NULL |
+| endereco | VARCHAR(150) | NULL |
+| data_cadastro | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+
+---
+
+### 2. servico
+| Campo | Tipo | Restrições |
+|-------|------|-------------|
+| id_servico | SERIAL | PRIMARY KEY |
+| nome | VARCHAR(100) | NOT NULL |
+| descricao | TEXT | NULL |
+| preco | NUMERIC(10,2) | NOT NULL |
+| duracao_minutos | INT | NULL |
+
+---
+
+### 3. agendamento
+| Campo | Tipo | Restrições |
+|-------|------|-------------|
+| id_agendamento | SERIAL | PRIMARY KEY |
+| id_cliente | INT | REFERENCES cliente(id_cliente) ON DELETE CASCADE |
+| id_servico | INT | REFERENCES servico(id_servico) ON DELETE SET NULL |
+| data_agendamento | TIMESTAMP | NOT NULL |
+| status | VARCHAR(20) | DEFAULT 'PENDENTE' CHECK (status IN ('PENDENTE','CONFIRMADO','CANCELADO')) |
+
+---
+
+### 4. funcionario
+| Campo | Tipo | Restrições |
+|-------|------|-------------|
+| id_funcionario | SERIAL | PRIMARY KEY |
+| nome | VARCHAR(100) | NOT NULL |
+| email | VARCHAR(100) | UNIQUE NOT NULL |
+| senha_hash | VARCHAR(255) | NOT NULL |
+| cargo | VARCHAR(50) | NULL |
+
+---
+
+### 5. servico_funcionario (tabela associativa N:N)
+| Campo | Tipo | Restrições |
+|-------|------|-------------|
+| id_servico | INT | REFERENCES servico(id_servico) ON DELETE CASCADE |
+| id_funcionario | INT | REFERENCES funcionario(id_funcionario) ON DELETE CASCADE |
+| PRIMARY KEY (id_servico, id_funcionario) |
+
+---
+
+## 🔗 Relacionamentos
+
+1. **Cliente 1:N Agendamento** → um cliente pode ter vários agendamentos.  
+2. **Serviço 1:N Agendamento** → um serviço pode estar em vários agendamentos.  
+3. **Funcionário N:N Serviço** → um funcionário pode executar vários serviços, e um serviço pode ser feito por vários funcionários.  
+
+---
+
+## 🧱 Diagrama Relacional (ASCII)
+
+```
 +-------------+        +----------------+        +-----------------+
 |  cliente    |1------<|  agendamento   |>------1|   servico       |
 +-------------+        +----------------+        +-----------------+
@@ -92,3 +160,6 @@ A documentação interativa pode ser acessada em:
                          | id_servico   |
                          | id_funcion.  |
                          +--------------+
+```
+
+            
