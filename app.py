@@ -1,5 +1,10 @@
 from flask import Flask, redirect, url_for
 from extensions import db
+from models.user import User
+from models.task import Task
+from controllers.user_controller import UserController
+from controllers.task_controller import TaskController
+
 
 def create_app():
     app = Flask(__name__)
@@ -9,10 +14,6 @@ def create_app():
 
     db.init_app(app)
 
-    from models.user import User
-    from models.task import Task
-    from controllers.user_controller import UserController
-    from controllers.task_controller import TaskController
 
     # Rotas Usuários
     app.add_url_rule("/users", view_func=UserController.list_users, methods=["GET"], endpoint="list_users")
